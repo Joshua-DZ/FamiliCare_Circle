@@ -1,0 +1,401 @@
+.crear-receta-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.back-button-container {
+  max-width: 800px;
+  margin: 0 auto 20px auto;
+}
+
+.back-button {
+  background: #00C3A5;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-button:hover {
+  background: #009d8a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 195, 165, 0.3);
+}
+
+.crear-receta-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.receta-form-card {
+  background: #FFFFFF;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid #EEEEEE;
+}
+
+.receta-form-card h2 {
+  text-align: center;
+  color: #02475e;
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* FORM ROW PARA CAMPOS EN LÍNEA */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333333;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #00C3A5;
+  box-shadow: 0 0 0 3px rgba(0, 195, 165, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* SECCIÓN DE MEDICAMENTOS */
+.medicamentos-section {
+  margin: 30px 0;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 15px;
+  border: 2px dashed #e0e0e0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h3 {
+  color: #02475e;
+  margin: 0;
+  font-size: 20px;
+}
+
+.btn-agregar {
+  background: #00C3A5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-agregar:hover {
+  background: #009d8a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 195, 165, 0.3);
+}
+
+.btn-agregar:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* TARJETA DE MEDICAMENTO */
+.medicamento-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #e8e8e8;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.medicamento-card:last-child {
+  margin-bottom: 0;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-header h4 {
+  color: #02475e;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-eliminar {
+  background: #ff4757;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background: #ff3742;
+  transform: scale(1.1);
+}
+
+.btn-eliminar:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* CAMPOS DE MEDICAMENTO EN GRID */
+.medicamento-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.medicamento-fields .form-group:nth-child(1) {
+  grid-column: 1 / -1;
+}
+
+/* MENSAJE DE ERROR */
+.error-message {
+  background: #ffe6e6;
+  color: #d63031;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #ffcccc;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* BOTONES DE ACCIÓN */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-cancel {
+  background: #e6e6e6;
+  color: #333;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btn-cancel:hover {
+  background: #d4d4d4;
+}
+
+.btn-cancel:disabled {
+  background: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.btn-save {
+  background: #00C3A5;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btn-save:hover {
+  background: #009d8a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 195, 165, 0.3);
+}
+
+.btn-save:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ESTADOS DE CARGA */
+.loading-state {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .crear-receta-page {
+    padding: 15px;
+  }
+  
+  .receta-form-card {
+    padding: 30px 25px;
+  }
+  
+  .receta-form-card h2 {
+    font-size: 24px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .medicamento-fields {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .back-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .medicamentos-section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .receta-form-card {
+    padding: 25px 20px;
+  }
+  
+  .receta-form-card h2 {
+    font-size: 22px;
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 10px 14px;
+  }
+  
+  .medicamento-card {
+    padding: 15px;
+  }
+  
+  .medicamentos-section {
+    padding: 15px;
+  }
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.medicamento-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ESTILOS PARA CAMPOS DESHABILITADOS */
+.form-group input:disabled,
+.form-group textarea:disabled,
+.form-group select:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #dee2e6;
+}
+
+/* INDICADOR DE CAMPOS OBLIGATORIOS */
+.form-group label::after {
+  content: " *";
+  color: #ff4757;
+}
+
+.form-group:has(select[required]) label::after,
+.form-group:has(input[required]) label::after,
+.form-group:has(textarea[required]) label::after {
+  content: " *";
+  color: #ff4757;
+}
+
+/* EXCEPCIÓN PARA CAMPOS NO OBLIGATORIOS */
+.form-group:not(:has(select[required])):not(:has(input[required])):not(:has(textarea[required])) label::after {
+  content: "";
+}

@@ -1,0 +1,341 @@
+.citas-medicas-page {
+  min-height: 100vh;
+  background: #D4EBE8;
+  font-family: 'Arial', sans-serif;
+}
+
+/* BARRA SUPERIOR */
+.citas-header {
+  background: #00C3A5;
+  padding: 20px 0 15px 0;
+  color: white;
+}
+
+.citas-top {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.back-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.citas-title h1 {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+  color: white;
+  text-align: center;
+}
+
+.fecha-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fecha-selector {
+  background: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+.fecha-actual {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 40px 0 40px;
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.9;
+  text-transform: capitalize;
+}
+
+/* CONTENEDOR DE CITAS */
+.citas-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px 40px;
+}
+
+.citas-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 2fr 1fr;
+  gap: 1px;
+  background: #B8D8D4;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ENCABEZADOS */
+.cita-header {
+  background: #02475e;
+  color: white;
+  padding: 20px 15px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ITEMS DE CITAS */
+.cita-item {
+  background: white;
+  padding: 20px 15px;
+  border-bottom: 1px solid #E8F4F2;
+  display: flex;
+  align-items: center;
+}
+
+.cita-item:last-child {
+  border-bottom: none;
+}
+
+.cita-paciente {
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+}
+
+.cita-hora {
+  font-weight: 500;
+  color: #02475e;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+.cita-tipo {
+  font-weight: 500;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+.cita-notas {
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.cita-estado {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+
+.cita-estado.confirmada {
+  background: #E8F6F3;
+  color: #00C3A5;
+  border: 1px solid #00C3A5;
+}
+
+.cita-estado.pendiente {
+  background: #FFF3E0;
+  color: #FF9800;
+  border: 1px solid #FF9800;
+}
+
+.cita-estado.cancelada {
+  background: #FFEBEE;
+  color: #F44336;
+  border: 1px solid #F44336;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .citas-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .cita-header {
+    display: none;
+  }
+  
+  .cita-item {
+    flex-direction: column;
+    align-items: start;
+    gap: 8px;
+    border: 1px solid #E8F4F2;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .cita-item::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #02475e;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  
+  .cita-item.paciente::before { content: "Paciente: "; }
+  .cita-item.hora::before { content: "Hora: "; }
+  .cita-item.tipo::before { content: "Tipo: "; }
+  .cita-item.notas::before { content: "Notas: "; }
+  .cita-item.estado::before { content: "Estado: "; }
+}
+
+@media (max-width: 768px) {
+  .citas-top {
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 20px;
+  }
+  
+  .citas-container {
+    padding: 20px;
+  }
+  
+  .citas-title h1 {
+    font-size: 28px;
+  }
+  
+  .fecha-actual {
+    padding: 10px 20px 0 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .citas-top {
+    padding: 0 15px;
+  }
+  
+  .citas-container {
+    padding: 15px;
+  }
+  
+  .back-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .citas-title h1 {
+    font-size: 24px;
+  }
+}
+/* MENSAJES DE ESTADO */
+.loading-message,
+.no-citas-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.error-message {
+  background: #ffe6e6;
+  color: #d63031;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #ffcccc;
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* CONTADOR DE CITAS */
+.citas-count {
+  background: #00C3A5;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+/* INFORMACIÓN DEL PACIENTE */
+.cita-correo {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* ESTADOS DE CITAS */
+.cita-estado.pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.cita-estado.confirmada {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.cita-estado.completada {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.cita-estado.cancelada {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .citas-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .cita-header {
+    display: none;
+  }
+  
+  .cita-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .cita-item::before {
+    content: attr(data-label);
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #02475e;
+  }
+}
