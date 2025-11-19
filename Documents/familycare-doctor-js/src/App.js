@@ -11,6 +11,10 @@ import CitasMedicas from './components/pages/CitasMedicas/CitasMedicas';
 import CrearReceta from './components/pages/CrearReceta/CrearReceta';
 import HistorialMedico from './components/pages/HistorialMedico/HistorialMedico';
 import AgendarCita from './components/pages/AgendarCita/AgendarCita';
+import RecuperarContrasena from './components/pages/RecuperarContrasena/RecuperarContrasena';
+import VerificarCodigo from './components/pages/VerificarCodigo/VerificarCodigo';
+import NuevaContrasena from './components/pages/NuevaContrasena/NuevaContrasena';
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -23,7 +27,7 @@ function ProtectedRoute({ children }) {
 
 function PublicDashboard({ children }) {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return <div className="loading-screen">Cargando...</div>;
   }
@@ -39,12 +43,15 @@ function App() {
         <Route path="/dashboard" element={<PublicDashboard><Dashboard /></PublicDashboard>} />
         <Route path="/registrarse" element={<Registrarse />} />
         <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route path='/panelmedico' element={<PanelMedico/>}/>
-        <Route path='/Registropaciente' element={<RegistroCliente/>}/>
-        <Route path='/citamedica' element={<CitasMedicas/>}/>
-        <Route path='/crearreceta' element={<CrearReceta/>}/>
-        <Route path='/historialmedico' element={<HistorialMedico/>}/>
-        <Route path='/agendarcita' element={<AgendarCita/>}/>
+        <Route path='/panelmedico' element={<PanelMedico />} />
+        <Route path='/Registropaciente' element={<RegistroCliente />} />
+        <Route path='/citamedica' element={<CitasMedicas />} />
+        <Route path='/crearreceta' element={<CrearReceta />} />
+        <Route path='/historialmedico' element={<HistorialMedico />} />
+        <Route path='/agendarcita' element={<AgendarCita />} />
+        <Route path="/Recuperarcontrasena" element={<RecuperarContrasena />} />
+        <Route path="/VerificarCodigo" element={<VerificarCodigo />} />
+        <Route path="/NuevaContrasena" element={<NuevaContrasena />} />
       </Routes>
     </Router>
   );

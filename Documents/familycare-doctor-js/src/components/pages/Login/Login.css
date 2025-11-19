@@ -170,3 +170,20 @@
 .login-hint p {
   margin: 5px 0;
 }
+
+.password-helper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  margin-right: 50px; /* Juega con este valor */
+}
+
+.forgot-password {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}

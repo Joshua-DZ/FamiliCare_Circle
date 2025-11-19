@@ -1,18 +1,23 @@
+require('dotenv').config();
+console.log('📁 Ruta del .env:', process.cwd());
+console.log('📧 EMAIL_USER:', process.env.EMAIL_USER);
 const express = require('express');
 const cors = require('cors');
 const mariadb = require('mariadb');
+const nodemailer = require('nodemailer');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const pool = mariadb.createPool({
-  host: '127.0.0.1', 
-  user: 'root',
-  password: 'root',
-  database: 'familycarecircledb',
+  host: process.env.DB_HOST || '127.0.0.1',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'Bj8mysql8.',
+  database: process.env.DB_NAME || 'familycarecircledb',
   connectionLimit: 5,
-  bigIntAsNumber: true
+  bigIntAsNumber: true,
+  allowPublicKeyRetrieval: true
 });
 
 // RUTA PARA LOGIN DE DOCTORES - USANDO LOS MISMOS NOMBRES QUE EL VIEJO
@@ -20,9 +25,9 @@ app.post('/api/login', async (req, res) => {
   let conn;
   try {
     const { email, password } = req.body;
-    
+
     conn = await pool.getConnection();
-    
+
     // Buscar en la tabla medicos - USAR "Correo" (MAYÚSCULA) como en el viejo
     const medicosRows = await conn.query(
       "SELECT * FROM medicos WHERE Correo = ?",
@@ -40,7 +45,7 @@ app.post('/api/login', async (req, res) => {
         "SELECT * FROM usuarios WHERE Correo = ?",
         [email]
       );
-      
+
       if (usuariosRows.length > 0) {
         user = usuariosRows[0];
         userType = user.Tipo_Usuario;
@@ -48,17 +53,17 @@ app.post('/api/login', async (req, res) => {
     }
 
     if (!user) {
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Usuario no encontrado' 
+      return res.status(401).json({
+        success: false,
+        message: 'Usuario no encontrado'
       });
     }
 
     // Verificar contraseña - USAR "Contraseña" (MAYÚSCULA) como en el viejo
     if (user.Contraseña !== password) {
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Contraseña incorrecta' 
+      return res.status(401).json({
+        success: false,
+        message: 'Contraseña incorrecta'
       });
     }
 
@@ -78,9 +83,9 @@ app.post('/api/login', async (req, res) => {
 
   } catch (err) {
     console.log('Error en login:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Error del servidor' 
+    res.status(500).json({
+      success: false,
+      message: 'Error del servidor'
     });
   } finally {
     if (conn) conn.release();
@@ -92,7 +97,7 @@ app.post('/api/registrarse', async (req, res) => {
   let conn;
   try {
     console.log('📨 Datos recibidos para registro:', req.body);
-    
+
     const nombre = req.body.nombre;
     const apellidos = req.body.apellidos;
     const especialidad = req.body.especialidad;
@@ -146,14 +151,14 @@ app.post('/api/registrarse', async (req, res) => {
        (nombre, apellidos, especialidad, Cedula_Profesional, telefono, correo, contraseña)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
-        nombre, 
-        apellidos, 
-        especialidad, 
-        cedula, 
-        telefono || null, 
-        email, 
-        password, 
-        horarioConsulta || 'Lunes a Viernes 8:00 - 16:00', 
+        nombre,
+        apellidos,
+        especialidad,
+        cedula,
+        telefono || null,
+        email,
+        password,
+        horarioConsulta || 'Lunes a Viernes 8:00 - 16:00',
         'Activo'
       ]
     );
@@ -188,12 +193,12 @@ app.get('/api/medicos', async (req, res) => {
   try {
     conn = await pool.getConnection();
     const medicos = await conn.query("SELECT * FROM medicos");
-    
+
     const medicosConvertidos = medicos.map(medico => ({
       ...medico,
       ID_Medico: Number(medico.ID_Medico)
     }));
-    
+
     res.json({
       success: true,
       medicos: medicosConvertidos
@@ -215,7 +220,7 @@ app.get('/api/test-db', async (req, res) => {
   try {
     conn = await pool.getConnection();
     const result = await conn.query("SELECT 1 as test");
-    
+
     res.json({
       success: true,
       message: 'Conexión a la base de datos exitosa',
@@ -233,11 +238,11 @@ app.get('/api/test-db', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: '🚀 Servidor FamilyCare Circle funcionando',
     endpoints: {
       login: 'POST /api/login',
-      register: 'POST /api/registrarse', 
+      register: 'POST /api/registrarse',
       medicos: 'GET /api/medicos',
       test: 'GET /api/test-db'
     }
@@ -249,16 +254,16 @@ app.post('/api/registro-paciente', async (req, res) => {
   let conn;
   try {
     console.log('📨 Datos recibidos para registro de paciente:', req.body);
-    
-    const { 
-      nombre, 
-      apellidos, 
-      fecha_de_nacimiento, 
-      sexo, 
-      email, 
-      telefono, 
-      password, 
-      tipo_de_paciente 
+
+    const {
+      nombre,
+      apellidos,
+      fecha_de_nacimiento,
+      sexo,
+      email,
+      telefono,
+      password,
+      tipo_de_paciente
     } = req.body;
 
     console.log('🔧 Datos procesados:', {
@@ -290,13 +295,13 @@ app.post('/api/registro-paciente', async (req, res) => {
        (Nombre, Apellidos, Fecha_Nacimiento, Sexo, Correo, Telefono, Contraseña)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
-        nombre, 
-        apellidos, 
-        fecha_de_nacimiento, 
-        sexo, 
-        email, 
-        telefono || null, 
-        password, 
+        nombre,
+        apellidos,
+        fecha_de_nacimiento,
+        sexo,
+        email,
+        telefono || null,
+        password,
         tipo_de_paciente
       ]
     );
@@ -328,9 +333,9 @@ app.post('/api/registro-paciente', async (req, res) => {
 app.post('/api/registro-familiar', async (req, res) => {
   let conn;
   try {
-    const { 
-      nombre, apellidos, fecha_de_nacimiento, sexo, email, 
-      telefono, password, relacion 
+    const {
+      nombre, apellidos, fecha_de_nacimiento, sexo, email,
+      telefono, password, relacion
     } = req.body;
 
     conn = await pool.getConnection();
@@ -379,15 +384,15 @@ app.post('/api/crear-receta', async (req, res) => {
   let conn;
   try {
     console.log('📨 Datos recibidos para crear receta:', req.body);
-    
-    const { 
+
+    const {
       correo_paciente, // Cambiado de 'paciente' a 'correo_paciente'
       diagnostico,
       instrucciones_especificas,
       fecha_emision,
       fecha_vencimiento,
       via_administracion,
-      medicamentos 
+      medicamentos
     } = req.body;
 
     // Validar que se proporcionó el correo
@@ -399,10 +404,10 @@ app.post('/api/crear-receta', async (req, res) => {
     }
 
     conn = await pool.getConnection();
-    
+
     // ID del médico (por ahora 1 para pruebas)
     const id_medico = 1;
-    
+
     // Buscar el ID del paciente por CORREO (cambiado)
     const pacienteRows = await conn.query(
       "SELECT ID_Usuario FROM usuarios WHERE Correo = ?", // Cambiado a Correo
@@ -419,7 +424,7 @@ app.post('/api/crear-receta', async (req, res) => {
     const id_paciente = pacienteRows[0].ID_Usuario;
 
     // Convertir array de medicamentos a string para la base de datos
-    const medicamentosTexto = medicamentos.map(med => 
+    const medicamentosTexto = medicamentos.map(med =>
       `${med.nombre} - ${med.dosis} - ${med.frecuencia}`
     ).join('; ');
 
@@ -494,7 +499,7 @@ app.get('/api/buscar-paciente-historial', async (req, res) => {
   let conn;
   try {
     const { correo } = req.query;
-    
+
     if (!correo) {
       return res.status(400).json({
         success: false,
@@ -503,7 +508,7 @@ app.get('/api/buscar-paciente-historial', async (req, res) => {
     }
 
     conn = await pool.getConnection();
-    
+
     const pacienteRows = await conn.query(
       "SELECT ID_Usuario, Nombre, Apellidos, Fecha_Nacimiento, Sexo, Correo, Telefono FROM usuarios WHERE Correo = ?",
       [correo]
@@ -537,7 +542,7 @@ app.get('/api/recetas-paciente', async (req, res) => {
   let conn;
   try {
     const { correo } = req.query;
-    
+
     if (!correo) {
       return res.status(400).json({
         success: false,
@@ -546,7 +551,7 @@ app.get('/api/recetas-paciente', async (req, res) => {
     }
 
     conn = await pool.getConnection();
-    
+
     // Primero obtener el ID del paciente
     const pacienteRows = await conn.query(
       "SELECT ID_Usuario FROM usuarios WHERE Correo = ?",
@@ -593,7 +598,7 @@ app.get('/api/especialidades', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    
+
     // Consulta corregida - verificar que la tabla y columna existan
     const especialidadesRows = await conn.query(
       "SELECT DISTINCT Especialidad FROM medicos ORDER BY Especialidad"
@@ -624,7 +629,7 @@ app.get('/api/buscar-medico-especialidad', async (req, res) => {
   let conn;
   try {
     const { especialidad } = req.query;
-    
+
     if (!especialidad) {
       return res.status(400).json({
         success: false,
@@ -633,7 +638,7 @@ app.get('/api/buscar-medico-especialidad', async (req, res) => {
     }
 
     conn = await pool.getConnection();
-    
+
     // Buscar médico con la especialidad requerida
     const medicoRows = await conn.query(
       "SELECT ID_Medico, Nombre, Apellidos, Especialidad, Cedula_Profesional FROM medicos WHERE Especialidad = ? LIMIT 1",
@@ -671,8 +676,8 @@ app.post('/api/agendar-cita', async (req, res) => {
   let conn;
   try {
     console.log('📨 Datos recibidos para agendar cita:', req.body);
-    
-    const { 
+
+    const {
       correo_paciente,
       paciente_nombre,
       fecha,
@@ -695,7 +700,7 @@ app.post('/api/agendar-cita', async (req, res) => {
     }
 
     conn = await pool.getConnection();
-    
+
     // Verificar que el médico existe
     const medicoRows = await conn.query(
       "SELECT ID_Medico FROM medicos WHERE ID_Medico = ?",
@@ -771,10 +776,10 @@ app.get('/api/citas-medico', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    
+
     // Obtener el ID del médico del query parameter o del token (aquí uso query parameter)
     const { id_medico } = req.query;
-    
+
     if (!id_medico) {
       return res.status(400).json({
         success: false,
@@ -783,7 +788,7 @@ app.get('/api/citas-medico', async (req, res) => {
     }
 
     console.log('🔄 Obteniendo citas para médico ID:', id_medico);
-    
+
     // Obtener todas las citas del médico con información del paciente
     const citasRows = await conn.query(
       `SELECT 
@@ -830,6 +835,195 @@ app.get('/api/citas-medico', async (req, res) => {
     if (conn) conn.release();
   }
 });
+/* ============ ENDPOINT PARA RECUPERACION DE CONTRASEÑA ============ */
+// Configurar Nodemailer (Gmail)
+const transport = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASS
+  }
+});
+
+// Almacenamiento temporal de códigos (en producción usa Redis)
+const passwordResetCodes = new Map();
+
+// 1. Endpoint: Solicitar recuperación de contraseña
+app.post('/api/auth/forgot-password', async (req, res) => {
+  let conn;
+  try {
+    const { email } = req.body;
+
+    console.log('📧 Solicitando recuperación para:', email);
+
+    conn = await pool.getConnection();
+  
+    // Verificar si el email existe en médicos O usuarios
+    const medicosRows = await conn.query(
+      "SELECT ID_Medico, Correo FROM medicos WHERE Correo = ?",
+      [email]
+    );
+
+    const usuariosRows = await conn.query(
+      "SELECT ID_Usuario, Correo FROM usuarios WHERE Correo = ?",
+      [email]
+    );
+
+    if (medicosRows.length === 0 && usuariosRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Correo no encontrado'
+      });
+    }
+    
+    // Generar código de 4 dígitos
+    const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+    // Guardar código temporalmente (10 minutos)
+    passwordResetCodes.set(email, {
+      code: resetCode,
+      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutos
+    });
+
+    console.log(`🔐 Código generado para ${email}: ${resetCode}`);
+
+    // Configurar email
+    const mailOptions = {
+      from: '"FamilyCare Circle" <briancorreaherrera@gmail.com>',
+      to: email,
+      subject: 'Código de recuperación - FamilyCare Circle',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #00C3A5;">Recuperación de Contraseña</h2>
+          <p>Hola,</p>
+          <p>Has solicitado restablecer tu contraseña. Usa el siguiente código:</p>
+          <div style="background: #f0f2f5; padding: 15px; text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold; color: #02475e; margin: 20px 0;">
+            ${resetCode}
+          </div>
+          <p>Este código expira en 10 minutos.</p>
+          <p>Si no solicitaste este cambio, ignora este mensaje.</p>
+          <br>
+          <p>Saludos,<br>Equipo FamilyCare Circle</p>
+        </div>
+      `
+    };
+
+    // Enviar email
+    await transport.sendMail(mailOptions);
+
+    console.log('✅ Email enviado a:', email);
+
+    res.json({
+      success: true,
+      message: 'Código enviado a tu correo'
+    });
+
+  } catch (error) {
+    console.error('❌ Error en recuperación:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error del servidor'
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// 2. Endpoint: Verificar código
+app.post('/api/auth/verify-code', (req, res) => {
+  const { email, code } = req.body;
+
+  console.log('🔍 Verificando código para:', email);
+
+  const resetData = passwordResetCodes.get(email);
+
+  if (!resetData) {
+    return res.status(400).json({
+      success: false,
+      message: 'Código no encontrado o expirado'
+    });
+  }
+
+  if (Date.now() > resetData.expiresAt) {
+    passwordResetCodes.delete(email);
+    return res.status(400).json({
+      success: false,
+      message: 'Código expirado'
+    });
+  }
+
+  if (resetData.code !== code) {
+    return res.status(400).json({
+      success: false,
+      message: 'Código incorrecto'
+    });
+  }
+
+  console.log('✅ Código verificado para:', email);
+
+  res.json({
+    success: true,
+    message: 'Código verificado correctamente'
+  });
+});
+
+// 3. Endpoint: Cambiar contraseña
+app.post('/api/auth/reset-password', async (req, res) => {
+  let conn;
+  try {
+    const { email, code, newPassword } = req.body;
+
+    console.log('🔄 Cambiando contraseña para:', email);
+
+    const resetData = passwordResetCodes.get(email);
+
+    // Verificar código
+    if (!resetData || resetData.code !== code || Date.now() > resetData.expiresAt) {
+      return res.status(400).json({
+        success: false,
+        message: 'Sesión inválida o expirada'
+      });
+    }
+
+    conn = await pool.getConnection();
+
+    // Buscar y actualizar en médicos
+    const medicosResult = await conn.query(
+      "UPDATE medicos SET Contraseña = ? WHERE Correo = ?",
+      [newPassword, email]
+    );
+
+    // Si no se actualizó en médicos, buscar en usuarios
+    if (medicosResult.affectedRows === 0) {
+      await conn.query(
+        "UPDATE usuarios SET Contraseña = ? WHERE Correo = ?",
+        [newPassword, email]
+      );
+    }
+
+    // Limpiar código usado
+    passwordResetCodes.delete(email);
+
+    console.log('✅ Contraseña actualizada para:', email);
+
+    res.json({
+      success: true,
+      message: 'Contraseña actualizada correctamente'
+    });
+
+  } catch (error) {
+    console.error('❌ Error actualizando contraseña:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error actualizando contraseña'
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+// NO olvides agregar esto al final (antes del app.listen)
+console.log('✅ Endpoints de recuperación de contraseña cargados');
 app.listen(3001, () => {
   console.log('🚀 Servidor corriendo en http://localhost:3001');
   console.log('✅ API Login: POST http://localhost:3001/api/login');

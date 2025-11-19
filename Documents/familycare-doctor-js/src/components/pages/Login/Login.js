@@ -37,6 +37,10 @@ const Login = () => {
   const handleCreateAccount = () => {
     navigate('/registrarse');
   };
+  // Recuperacion de contraseña
+  const handleForgotPassword = () => {
+    navigate('/RecuperarContrasena');
+  };
 
   return (
     <div className="login-page">
@@ -46,9 +50,9 @@ const Login = () => {
         </div>
 
         <div className="login-icons">
-          <button 
-            type="button" 
-            className="btn-cancel" 
+          <button
+            type="button"
+            className="btn-cancel"
             onClick={handleBackToDashboard}
           >
             Volver al inicio
@@ -90,22 +94,28 @@ const Login = () => {
           </div>
 
           <div className="form-actions">
-            <button 
-              type="button" 
-              className="btn-secondary" 
+            <button
+              type="button"
+              className="btn-secondary"
               onClick={handleCreateAccount}
               disabled={loading}
             >
               Crear cuenta
             </button>
 
-            <button 
-              type="submit" 
-              className="btn-save" 
+            <button
+              type="submit"
+              className="btn-save"
               disabled={loading}
             >
               {loading ? 'Iniciando...' : 'Ingresar'}
             </button>
+          </div>
+
+          <div className="password-helper">
+            <Link to="/RecuperarContrasena" className="forgot-password-link" onClick={handleForgotPassword}>
+              ¿Olvidaste tu contraseña?
+            </Link>
           </div>
         </form>
       </div>
